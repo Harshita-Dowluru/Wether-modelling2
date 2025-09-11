@@ -1,38 +1,58 @@
-# WEATHER MODELING - INCREMENTAL MODEL
-# Quadratic model: T(t) = a*t^2 + b*t + c
+import numpy as np
+import matplotlib.pyplot as plt
 
-def quadratic_weather_model(a, b, c, t):
-    """Predict temperature using quadratic equation."""
-    return a * (t ** 2) + b * t + c
+# Quadratic weather model function
+def quadratic_weather_model(t, a, b, c):
+    return a * t**2 + b * t + c
 
-print("=== INCREMENTAL MODEL ===")
+# Initial coefficients
+a_base, b_base, c_base = -0.2, 1.5, 24
 
-# === Increment 1: Hardcoded values ===
-print("\nIncrement 1: Hardcoded values")
-a, b, c, t = 0.5, -3, 28, 5
-print(f"Inputs: a={a}, b={b}, c={c}, t={t}")
-print(f"Predicted Temp: {quadratic_weather_model(a, b, c, t):.2f}°C")
+# Times to check temperature
+times_to_check = [0, 6, 12, 18, 24]
 
-# === Increment 2: Keyboard input ===
-print("\nIncrement 2: Keyboard input")
-a = float(input("Enter coefficient a: "))
-b = float(input("Enter coefficient b: "))
-c = float(input("Enter coefficient c: "))
-t = float(input("Enter time t (hour/day): "))
-print(f"Predicted Temp: {quadratic_weather_model(a, b, c, t):.2f}°C")
+# Number of increments
+increments = 4
 
-# === Increment 3: File input (single set) ===
-print("\nIncrement 3: File input (single set)")
-with open("inputs_single.txt", "r") as f:
-    lines = f.readlines()
-a = float(lines[0]); b = float(lines[1]); c = float(lines[2]); t = float(lines[3])
-print(f"File Inputs -> a={a}, b={b}, c={c}, t={t}")
-print(f"Predicted Temp: {quadratic_weather_model(a, b, c, t):.2f}°C")
+# Prepare smooth time array for plotting curves
+time_smooth = np.linspace(0, 24, 200)
 
-# === Increment 4: File input (multiple sets) ===
-print("\nIncrement 4: File input (multiple sets)")
-with open("inputs_multiple.txt", "r") as f:
-    for line in f:
-        a, b, c, t = map(float, line.strip().split())
-        T = quadratic_weather_model(a, b, c, t)
-        print(f"Inputs: a={a}, b={b}, c={c}, t={t} -> Predicted Temp: {T:.2f}°C")
+# Colors for plotting
+colors = ['blue', 'green', 'red', 'purple']
+
+plt.figure()
+
+print("\n=== INCREMENT MODEL ===")
+
+for inc in range(increments):
+    print(f"\nIncrement {inc+1}:")
+    
+    # Simulate coefficient changes — example: increase a and decrease c over increments
+    a = a_base + 0.05 * inc          # a increases slightly
+    b = b_base                      # b constant
+    c = c_base - 0.8 * inc          # c decreases
+    
+    # Print temperatures at specific times
+    for t in times_to_check:
+        temp = quadratic_weather_model(t, a, b, c)
+        print(f"Time: {t} hrs -> Temp: {temp:.2f}°C")
+    print("---")
+    
+    # Compute smooth curve temperatures
+    temps_smooth = quadratic_weather_model(time_smooth, a, b, c)
+    
+    # Plot the curve
+    plt.plot(time_smooth, temps_smooth, color=colors[inc], label=f'Increment {inc+1}')
+    
+    # Mark data points at times_to_check
+    temps_points = [quadratic_weather_model(t, a, b, c) for t in times_to_check]
+    plt.scatter(times_to_check, temps_points, color=colors[inc])
+
+plt.title("Increment Model Temperature Prediction")
+plt.xlabel("Time (hours)")
+plt.ylabel("Temperature (°C)")
+plt.grid(True)
+plt.legend()
+plt.savefig("increment_model_temperature.png")
+plt.show()
+
