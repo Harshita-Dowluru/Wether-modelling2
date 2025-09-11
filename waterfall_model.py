@@ -1,24 +1,26 @@
-# WEATHER MODELING - WATERFALL MODEL
-# Quadratic model: T(t) = a*t^2 + b*t + c
+import matplotlib.pyplot as plt
 
-# === Requirement Analysis ===
-# Inputs: coefficients a, b, c and time t
-# Output: Predicted temperature
+# Waterfall model quadratic temperature prediction function
+def waterfall_temperature(t):
+    a, b, c = -0.2, 1.5, 24
+    return a * t**2 + b * t + c
 
-# === System Design ===
-a = -0.2
-b = 1.5
-c = 24
+# Define time points (hours)
+hours = list(range(0, 25, 6))  # 0, 6, 12, 18, 24
 
-def quadratic_weather_model(time):
-    """Predict temperature using quadratic equation."""
-    return a * (time ** 2) + b * time + c
+# Calculate temperatures for each hour
+temperatures = [waterfall_temperature(t) for t in hours]
 
-# === Implementation & Testing ===
-print("=== WATERFALL MODEL ===")
-for hour in range(0, 25, 6):  # every 6 hours
-    temp = quadratic_weather_model(hour)
-    print(f"Time: {hour} hrs -> Predicted Temp: {temp:.2f}°C")
+# Plot the temperature over time
+plt.plot(hours, temperatures, marker='o', linestyle='-', color='blue')
+plt.title("Waterfall Model Temperature Prediction")
+plt.xlabel("Time (hours)")
+plt.ylabel("Temperature (°C)")
+plt.grid(True)
+plt.savefig("waterfall_model.png")  # Save plot as PNG file
+plt.show()
 
-# === Deployment ===
-print("Model executed successfully. Ready for deployment.")
+# Print values for each time point
+print("=== WATERFALL MODEL TEMPERATURE PREDICTION ===")
+for t, temp in zip(hours, temperatures):
+    print(f"Time: {t} hrs -> Temp: {temp:.2f}°C")
